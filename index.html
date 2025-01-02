@@ -182,15 +182,60 @@
     </div>
 </div>
 <!-- 引入脚本 -->
+<!-- 引入脚本 -->
 <script src="lightbox/lightbox.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // 监听“发送”按钮点击事件
-    document.getElementById("sendBtn").addEventListener("click", function() {
-        // 显示成功的模态框
-        var myModal = new bootstrap.Modal(document.getElementById('successModal'));
-        myModal.show();
+    document.getElementById("sendBtn").addEventListener("click", async function(event) {
+        event.preventDefault();  // 防止表单提交时刷新页面
+
+        // 获取表单数据
+        const formData = {
+            name: document.getElementById("name").value,
+            contact: document.getElementById("contact").value,
+            message: document.getElementById("message").value
+        };
+
+        // 禁用按钮，防止重复点击
+        document.getElementById("sendBtn").disabled = true;
+
+        try {
+            // 发送表单数据到后端
+            const response = await fetch('http://localhost:3000/sendEmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            console.log(response);  // 打印响应对象
+            if (response.ok) {
+                const data = await response.json();  // 如果 HTTP 状态是 200-299，则解析为 JSON
+                console.log('Response Data:', data);  // 打印响应内容
+
+                // 如果邮件发送成功，显示成功提示框
+                if (data.message === '邮件发送成功') {
+                    var myModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    myModal.show();
+                } else {
+                    alert('发送失败，请重试！');
+                }
+            } else {
+                throw new Error('网络错误');
+            }
+        } catch (error) {
+            alert('发送失败，请重试！');
+            console.error('Error:', error);
+        } finally {
+            // 重新启用按钮
+            document.getElementById("sendBtn").disabled = false;
+        }
     });
 </script>
+
+
+
 </body>
 </html>
