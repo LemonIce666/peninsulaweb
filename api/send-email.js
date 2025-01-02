@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 module.exports = async (req, res) => {
     // 设置 CORS 头，允许来自 GitHub Pages 的请求
-    res.setHeader('Access-Control-Allow-Origin', 'https://lemonice666.github.io'); // 允许来自 GitHub Pages 的请求
+    res.setHeader('Access-Control-Allow-Origin', 'https://lemonice666.github.io/peninsulaweb/'); // 允许来自 GitHub Pages 的请求
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
