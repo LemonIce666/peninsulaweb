@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 module.exports = async (req, res) => {
-    // 只有当请求方法是 POST 时才继续处理
     if (req.method === 'POST') {
         const { name, contact, message } = req.body;
 
@@ -9,15 +8,15 @@ module.exports = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'qq',
             auth: {
-                user: '2500474948@qq.com', // 你的QQ邮箱地址
-                pass: 'vzdvbkmtojntdibf'  // 你的QQ邮箱授权码（注意：不是密码）
+                user: process.env.MAIL_USER, // 从环境变量中读取
+                pass: process.env.MAIL_PASS  // 从环境变量中读取
             }
         });
 
         // 配置邮件选项
         const mailOptions = {
-            from: '2500474948@qq.com',
-            to: '2500474948@qq.com',  // 目标邮箱地址
+            from: process.env.MAIL_USER, // 使用环境变量
+            to: '2500474948@qq.com',     // 目标邮箱地址
             subject: '来自网页的留言信息',
             text: `姓名: ${name}\n联系方式: ${contact}\n留言: ${message}`
         };
@@ -32,7 +31,6 @@ module.exports = async (req, res) => {
             return res.status(500).json({ message: '邮件发送失败' });
         }
     } else {
-        // 如果不是 POST 请求，返回错误
         return res.status(405).json({ message: '只支持 POST 请求' });
     }
 };
